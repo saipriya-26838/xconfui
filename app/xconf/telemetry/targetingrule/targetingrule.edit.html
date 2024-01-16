@@ -1,0 +1,80 @@
+<!--
+*
+* Copyright 2023 Comcast Cable Communications Management, LLC
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+-->
+<h1 class="page-header">Targeting rule</h1>
+<div class="row">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">Name</span>
+                    <input title="Name" class="form-control" ng-model="vm.targetingRule.rule.name" type="text"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">Profile</span>
+                    <select id="boundTelemetryId" class="form-control" ng-model="vm.targetingRule.rule.boundTelemetryId"
+                            ng-options="profile.id as profile['telemetryProfile:name'] for profile in vm.profiles" label-length="10">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <ruleview-editor-directive
+                    is-valid-condition="vm.isValidCondition"
+                    data="vm.targetingRule.rule"></ruleview-editor-directive>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+                <rule-builder-directive ip-mac-is-condition-limit="vm.ipMacIsConditionLimit"
+                                        data="vm.targetingRule.rule"
+                                        is-valid-condition="vm.isValidCondition"
+                                        namespaced-list-data="vm.namespacedListData"
+                                        operations="vm.operations"
+                                        representation="vm.representation"
+                                        free-arg-autocomplete-values="vm.freeArgAutocompleteValues"
+                                        validation-function="vm.validationFunction"
+                                        percent-free-arg-name="vm.percentFreeArgName"
+                                        fixed-arg-required="true">
+                </rule-builder-directive>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <br>
+            <div class="pull-left">
+                <button type="button" class="btn btn-success" ng-click="vm.saveTargetingRule()" ng-disabled="vm.isSaving" title="Save">
+                    <span ng-if="!vm.saving">Save</span>
+                    <span ng-if="vm.saving">Saving...</span>
+                </button>
+                <button type="button" class="btn btn-default" ui-sref="targetingrules">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

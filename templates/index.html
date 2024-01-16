@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<!--
+* Copyright 2023 Comcast Cable Communications Management, LLC
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+* SPDX-License-Identifier: Apache-2.0
+
+* Copyright (c) 2011-2020 Twitter, Inc.
+* Copyright (c) 2011-2020 The Bootstrap Authors
+* Licensed under the MIT license
+-->
+
+<html data-ng-app="app" ng-strict-di>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <title data-ng-bind="title">Xconf Admin</title>
+    <style>
+        /* This helps the ng-show/ng-hide animations start at the right place. */
+        /* Since Angular has this but needs to load, this gives us the class early. */
+        .ng-hide {
+            display: none!important;
+        }
+    </style>
+
+    <link href="../app/compiled/vendor.css" rel="stylesheet">
+    <link href="../app/compiled/xconf.css" rel="stylesheet">
+
+    <script src="../app/compiled/vendor.js"></script>
+    <script src="../app/compiled/xconfUI.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-default navbar-static-top" ng-if="isAuthorized()">
+            <div class="container-flued">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#"><img src="/img/logo.png" width="100" height="31"></a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown" ng-show="authUtils.hasPermission(PERMISSION.READ_COMMON)">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false">
+                                Common <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a ui-sref="environments">Environments</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="models">Models</a>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <a ui-sref="namespacedlist({type: 'MAC_LIST'})">MAC Lists</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="namespacedlist({type: 'IP_LIST'})">IP Lists</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" ng-show="authUtils.canReadFirmware()">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Firmware <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a ui-sref="firmwareconfigs">Firmware Configs</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="firmwarerules">Firmware Rules</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="firmwareruletemplates"
+                                       ng-show="authUtils.hasPermission(PERMISSION.READ_FIRMWARE_RULE_TEMPLATES)">
+                                        Firmware Templates
+                                    </a>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <a ui-sref="roundrobinfilter">Download Location Filter</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="percentfilter">Percent Filter</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="activation-version">Activation version</a>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <a ui-sref="logs">Logs</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="reportpage-firmware">Report page</a>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <a ui-sref="testpage-firmware">Test page</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown" ng-show="authUtils.canReadDcm()">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">DCM <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a ui-sref="formulas">Formulas</a>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <a ui-sref="devicesettings">Device Settings</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="loguploadsettings">Log Upload Settings</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="vodsettings">VOD Settings</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="uploadrepositories">Upload repository</a>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <a ui-sref="testpage-dcm">Test page</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" ng-show="authUtils.canReadTelemetry()">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Telemetry <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a ui-sref="permanentprofiles">Permanent Profiles</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="targetingrules">Targeting Rules</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="telemetrytwoprofiles">Telemetry 2.0 Profiles</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="telemetrytwotargetingrules">Telemetry 2.0 Rules</a>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <a ui-sref="testpage-telemetry">Test page</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="testpage-telemetrytwo">Telemetry 2.0 Test page</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" ng-show="authUtils.canReadDcm()">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a ui-sref="settingprofiles">Setting Profiles</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="settingrules">Setting Rules</a>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <a ui-sref="settings-testpage">Test page</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" ng-show="authUtils.canReadDcm()">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">RFC <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a ui-sref='feature'>Feature</a>
+                                </li>
+                                <li>
+                                    <a ui-sref='featurerule'>Feature Rule</a>
+                                </li>
+                                <li role="separator" class="divider"></li>
+                                <li>
+                                    <a ui-sref='testpage-rfc'>Test page</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" ng-show="authUtils.hasPermission(PERMISSION.VIEW_TOOLS)">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a ui-sref='statistics'>Statistics</a>
+                                </li>
+                                <li>
+                                    <a ui-sref='changelog'>ChangeLog</a>
+                                </li>
+                                <li>
+                                    <a ui-sref='migration'>Migration</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="penetration-metrics-data-page">Penetration Data Report</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" ng-show="authUtils.canReadChanges()">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Changes <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                              <li>
+                                    <a ui-sref="changes">Telemetry Profile Changes</a>
+                              </li>
+                              <li>
+                                    <a ui-sref="telemetrytwochanges">Telemetry 2.0 Profile Changes</a>
+                              </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="navbar-right">
+                        <ul class="nav navbar-nav">
+                            <div class="btn-group-vertical application-type-select" role="group">
+                                <span type="button" class="btn-group application-type" role="group">Application</span>
+                                <select role="group" class="btn-group form-control"
+                                        ng-disabled="!authUtils.isMultipleApplication()"
+                                        ng-class="{'remove-button-class': !authUtils.isMultipleApplication()}"
+                                        ng-model="$root.applicationType"
+                                        ng-options="applicationType disable when !authUtils.isMultipleApplication() for applicationType in $root.availableApplicationTypes"
+                                        ng-change="changeApplicationType($root.applicationType)">
+                                </select>
+                            </div>
+                        </ul>
+                        <ul class="nav navbar-nav nav-logout">
+                            <div class="pull-right logout-container">
+                                <span ng-bind="currentUser.firstName"></span>
+                                <a class="ri-logout-box-r-line logout ri-lg ri-align" ng-click="$root.signOut()"></a>
+                            </div>
+                            <div class="date-time-container">
+                                <div class="data-container">
+                                    <span class="pull-right" ng-bind="currentTime | date : 'MM/dd/yyyy' : 'UTC'"></span>
+                                </div>
+                                <div class="time-container pull-rigth">
+                                    <span class="label label-primary pull-left utc-time">UTC</span>
+                                    <span class="pull-right" ng-bind="currentTime | date : 'HH:mm:ss' : 'UTC'"></span>
+                                </div>
+                            </div>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div ui-view class="content"></div>
+    </div>
+</body>
+</html>

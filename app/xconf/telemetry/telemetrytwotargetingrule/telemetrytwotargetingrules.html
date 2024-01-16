@@ -1,0 +1,132 @@
+<!--
+*
+* Copyright 2023 Comcast Cable Communications Management, LLC
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+-->
+<h1 class="page-header">
+    <div class="row">
+        <div class="col-md-4">
+            Telemetry 2.0 Targeting Rules
+        </div>
+        <div class="col-md-4">
+            <div class="form-inline">
+                <simple-search-directive options="vm.searchOptions"></simple-search-directive>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="pull-right">
+                <div class="btn-group">
+                    <button id="createEntity" type="button" class="btn btn-success"
+                            ui-sref="telemetrytwotargetingrule-edit"
+                            ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                        Create
+                    </button>
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                            ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu"
+                        ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                        <li>
+                            <a ui-sref="telemetrytwotargetingrule-import" style="cursor: pointer">
+                                Import
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <button type="button" class="btn btn-default" ng-show="vm.rules.length > 0" id="exportAll" ng-click="vm.exportAll()" title="Export All">
+                    Export All
+                </button>
+            </div>
+        </div>
+    </div>
+</h1>
+<div class="row" ng-hide="vm.rules.length === 0">
+    <div class="col-md-12" style="padding-top: 1em">
+        <div class="panel-default panel">
+            <table class="table">
+                <colgroup width="5%" />
+                <colgroup width="25%" />
+                <colgroup />
+                <colgroup width="145"/>
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Rule</th>
+                    <th class="pull-center">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="rule in vm.rules">
+                    <td>
+                        <button type="button" class="btn btn-default"
+                                ng-click="vm.viewTelemetryTwoRule(rule)"
+                                ng-show="authUtils.canReadTelemetry()"
+                                title="View">
+                            <i class=ri-eye-fill></i>
+                        </button>
+                    </td>
+                    <td style="width: 30em">
+                        <span class="telemetry-rule-name-value break-word-inline">{{rule.name}}</span><br>
+                    </td>
+                    <td>
+                        <div>
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <ruleview-directive data="rule"></ruleview-directive>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-default editEntity"
+                                    title="Edit"
+                                    ui-sref="telemetrytwotargetingrule-edit({ruleId: rule.id})"
+                                    ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                                <i class=ri-pencil-fill></i>
+                            </button>
+                            <button type="button" class="btn btn-default deleteEntity"
+                                    title="Delete"
+                                    ng-click="vm.deleteRule(rule)"
+                                    ng-show="authUtils.canWriteTelemetryByApplication($root.applicationType)">
+                                <i class=ri-delete-bin-7-line></i>
+                            </button>
+                            <button type="button" class="btn btn-default exportEntity" ng-click="vm.exportOne(rule.id)" title="Export one">
+                                <i class=ri-download-2-line></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div ng-show="vm.rules.length === 0 && !vm.isDataLoading" class="ads-no-results">
+    <h4>No results found</h4>
+</div>
+<div ng-show="vm.isDataLoading" class="loader-custom"></div>
+<xconf-pagination ng-if="vm.startParse()"
+                  page-size="vm.pageSize"
+                  page-number="vm.pageNumber"
+                  pagination-storage-key="vm.paginationStorageKey"
+                  get-general-items-number="vm.getGeneralItemsNumber()"
+                  get-page="vm.getRules()">
+</xconf-pagination>

@@ -1,0 +1,129 @@
+/*******************************************************************************
+ * Copyright 2023 Comcast Cable Communications Management, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *******************************************************************************/
+
+(function() {
+    'use strict';
+
+    angular
+        .module('app.telemetrytwoprofile')
+        .factory('telemetryTwoProfileService', service);
+
+    service.$inject = ['$http', 'utilsService', 'syncHttpService'];
+
+    function service($http, utilsService, syncHttpService) {
+        var API_URL = 'telemetry/v2/profile/';
+
+        return {
+            createTelemetryTwoProfile: createTelemetryTwoProfile,
+            updateTelemetryTwoProfile: updateTelemetryTwoProfile,
+            getTelemetryTwoProfiles: getTelemetryTwoProfiles,
+            getTelemetryTwoProfile: getTelemetryTwoProfile,
+            deleteTelemetryTwoProfile: deleteTelemetryTwoProfile,
+            exportOne: exportOne,
+            exportAll: exportAll,
+            getAll: getAll,
+            getTelemetryTwoProfilesByIdList: getTelemetryTwoProfilesByIdList,
+            getProfileView: getProfileView,
+            getProfileName: getProfileName,
+            updateSyncEntities: updateSyncEntities,
+            createSyncEntities: createSyncEntities
+        };
+
+        function getAll() {
+            return $http.get(API_URL);
+        }
+
+        function getTelemetryTwoProfiles(pageNumber, pageSize, context) {
+            var url = API_URL + 'filtered?pageNumber=' + pageNumber + '&pageSize=' + pageSize;
+            return $http.post(url, context);
+        }
+
+        function getTelemetryTwoProfile(id) {
+            return $http.get(API_URL + id);
+        }
+
+        function createTelemetryTwoProfile(telemetryTwoProfile) {
+            return $http.post(API_URL + 'change', telemetryTwoProfile);
+        }
+
+        function updateTelemetryTwoProfile(telemetryTwoProfile) {
+            return $http.put(API_URL + 'change', telemetryTwoProfile);
+        }
+
+        function deleteTelemetryTwoProfile(id){
+            return $http.delete(API_URL + 'change/' + id);
+        }
+
+        function exportOne(id) {
+            window.open(API_URL + id + '?export');
+        }
+
+        function exportAll() {
+            window.open(API_URL + '?export');
+        }
+
+        function getTelemetryTwoProfilesByIdList(idList) {
+            return $http.post(API_URL + "byIdList", idList);
+        }
+
+        function getProfileView(profile1, profile2) {
+            var profile = getProfileChanges(profile1, profile2);
+            if (!profile) {
+                return '';
+            }
+            var view = '';
+            if (profile['name']) {
+                view += 'NAME: ' + profile['name'] + '\n';
+            }
+            if (profile['jsonconfig']) {
+                view += 'JSON_CONFIG: ' + profile['jsonconfig'] + '\n';
+            }
+            return view;
+        }
+
+        function getProfileChanges(profile1, profile2) {
+            var oldProfileChanges = {};
+            if (!profile1) {
+                profile1 = {};
+            }
+            if (!profile2) {
+                profile2 = {};
+            }
+            if (!angular.equals(profile1['name'], profile2['name'])) {
+                oldProfileChanges['name'] = profile1['name'];
+            }
+            if (!angular.equals(profile1['jsonconfig'], profile2['jsonconfig'])) {
+                oldProfileChanges['jsonconfig'] = profile1['jsonconfig'];
+            }
+            return oldProfileChanges;
+        }
+
+        function getProfileName(profile) {
+            return profile['name'];
+        }
+        function updateSyncEntities(telemetryTwoProfiles) {
+            var requests = utilsService.generateRequestList(telemetryTwoProfiles, {url: API_URL + 'entities', method: 'PUT'});
+            return requests && requests.length ? syncHttpService.http(requests) : null;
+        }
+
+        function createSyncEntities(telemetryTwoProfile) {
+            var requests = utilsService.generateRequestList(telemetryTwoProfile, {url: API_URL + 'entities', method: 'POST'});
+            return requests && requests.length ? syncHttpService.http(requests) : null;
+        }
+    }
+})();

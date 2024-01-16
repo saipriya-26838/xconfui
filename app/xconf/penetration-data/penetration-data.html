@@ -1,0 +1,99 @@
+<!--
+*
+* Copyright 2023 Comcast Cable Communications Management, LLC
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+-->
+<h1 class="page-header">Penetration Data Report</h1>
+<div id="firmwareRuleTestPage" class="row" style="margin-top: -10px">
+    <div class="col-md-12">
+        <div class="form-group" style="font-size: 1.5em;">Parameters</div>
+        <div class="alert alert-info">
+            <span>Enter context parameters like estbMac.
+            </span>
+        </div>
+        <editable-map parameters="vm.parameters"
+                      auto-complete-values="vm.autoCompleteValues" quick-add="vm.quickAddValues" stop-add="vm.stopAdd"></editable-map>
+        <div class="form-group" style="margin-top: 10px">
+            <button id="test" type="button" class="btn btn-primary"
+                    ng-click="vm.matchRules()">Get Result</button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12" ng-if="vm.result">
+        <div ng-if="vm.context">
+            <div class="form-group" style="font-size: 1.5em;">Context</div>
+            <div class="alert alert-info break-word">
+                {{vm.context}}
+            </div>
+        </div>
+        <div ng-if="vm.result">
+            <div>
+                <hr>
+                <h3>Penetration Data</h3>
+                <table class="table table-striped">
+                    <tbody>
+                    <tr>
+                        <td><b>EstbMac </b></td>
+                        <td >{{vm.result.estb_mac}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Fw Additional Version Info </b></td>
+                        <td >{{vm.result.fw_additional_version_info}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Fw Applied Rule</b></td>
+                        <td>{{vm.result.fw_applied_rule}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Fw Reported Version</b></td>
+                        <td>{{vm.result.fw_reported_version}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Fw Timestamp</b></td>
+                        <td>{{vm.timeFromTimestamp(vm.result.fw_ts)}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Fw Version</b></td>
+                        <td>{{vm.result.fw_version}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Model</b></td>
+                        <td>{{vm.result.model}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Partner</b></td>
+                        <td>{{vm.result.partner}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Rfc Applied Rules</b></td>
+                        <td>{{vm.result.rfc_applied_rules}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Rfc Features</b></td>
+                        <td>{{vm.result.rfc_features}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Rfc Timestamp</b></td>
+                        <td>{{vm.timeFromTimestamp(vm.result.rfc_ts)}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+# Ignore Intellij stuff
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# Ignore Build and unit tests stuff
+logs/
+target/
+bin/
+obj/
+out/
+bin/
+bower_components/
+node_modules/
+
+# Ignore Mac stuff
+.DS_Store
+
+__debug_bin
+package-lock.json
+
+#Ignore Compiled
+app/compiled/
