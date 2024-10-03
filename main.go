@@ -112,6 +112,7 @@ func NewProxyToBackend(targetHost string) *httputil.ReverseProxy {
 
 func ProxyRequestHandler(proxy *httputil.ReverseProxy) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		r.Header.Set("X-Request-ID", "adminui")
 		proxy.ServeHTTP(w, r)
 	}
 }
