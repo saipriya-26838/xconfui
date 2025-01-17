@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "XCONF-AngularJS-UI",
   "scripts": {
+    "start": "node index.js",
     "init": "npm install",
     "install": "bower install"
   },
@@ -30,3 +31,4 @@
     "http-server": "^14.1.1"
   }
 }
+
